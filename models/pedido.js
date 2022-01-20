@@ -12,8 +12,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Pedido.belongsTo(models.Cliente);
-      Pedido.belongsToMany(models.servico,{
-        through:'ItemPedido'
+      Pedido.belongsToMany(models.Servico,{
+        through: 'ItemPedido'
       });
     }
   };
