@@ -13,7 +13,7 @@ module.exports = {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
       },
-      SevicoId: {
+      ServicoId: {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.INTEGER,

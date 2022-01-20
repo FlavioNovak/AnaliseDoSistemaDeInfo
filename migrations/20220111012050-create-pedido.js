@@ -21,8 +21,8 @@ module.exports = {
       ClienteId : {
         allowNull: false,
         type: Sequelize.INTEGER,
-        refernces: {
-          model: 'clientes',
+        reference: {
+          model: 'Clientes',
           key: 'id'
         },
         onDelete: 'CASCADE',
