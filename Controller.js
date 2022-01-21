@@ -5,6 +5,7 @@ const models=require('./models');
 
 const app=express();
 app.use(cors());
+app.use(express.json());
 
 let cliente= models.Cliente;
 let itempedido = models.ItemPedido;
@@ -15,44 +16,68 @@ app.get('/', function(req,res){
     res.send('Olá, mundo!')
 });
 
-app.get('/servicos', async(req,res)=>{
-    await servico.create({
-        nome: "Nodejs",
-        descricao: "Desenvolvimento de aplicação back-end",
-        createAt: new Date(),
-        updateAt: new Date()
+app.post('/servicos', async(req,res)=>{
+    await servico.create(
+        req.body
+    ).then(function(){
+        return res.json({
+            error: false,
+            message: "Serviço criado com sucesso!"
+        })
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            message: "Foi impossível se conectar."   
+        })
     });
-    res.send('Serviço criado com sucesso!');
 });
 
-app.get('/clientes', async(req,res)=>{
-    await cliente.create({
-        nome: "Flavio Novak",
-        endereco: "Rua Peru 727 Jd. Alvorada",
-        cidade: "Maringá",
-        uf: "Paraná",
-        nascimento: "1999-08-08",
-        clienteDesde: "2022-01-20"
+app.post('/clientes', async(req,res)=>{
+    await cliente.create(
+        req.body
+    ).then(function(){
+        return res.json({
+            error: false,
+            message: "Cliente adicionado com sucesso!"
+        })
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            message: "Erro ao adicionar o cliente."
+        })
     });
-    res.send('Cliente cadastrado com sucesso!')
 });
 
-app.get('/pedidos', async(req,res)=>{
-    await pedido.create({
-        dataPedido: "2022-01-20",
-        ClienteId: 1
+app.post('/pedidos', async(req,res)=>{
+    await pedido.create(
+        req.body
+    ).then(function(){
+        return res.json({
+            error: false,
+            message: "Pedido realizado com sucesso!"
+        })
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            message: "Não foi possivel adicionar o pedido."
+        })
     });
-    res.send('Pedido feito com sucesso!')
 });
 
-app.get('/itempedidos', async(req,res)=>{
-    await itempedido.create({
-        quantidade: 1,
-        valor: 350.00,
-        ServicoId: 2,
-        PedidoId: 2
+app.post('/itempedidos', async(req,res)=>{
+    await itempedido.create(
+        req.body
+    ).then(function(){
+        return res.json({
+            error: false,
+            message: "Item adicionado ao pedido com sucesso!"
+        })
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            message: "Não foi possivel adicionar o pedido."
+        })
     });
-    res.send('Pedido feito com sucesso!')
 });
 
 
