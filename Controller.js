@@ -80,6 +80,65 @@ app.post('/itempedidos', async(req,res)=>{
     });
 });
 
+app.get('/listaservicos', async(req, res)=>{
+    await servico.findAll({
+        //raw: true
+        order: [['nome', 'ASC']]
+    }).then(function(servicos){
+        res.json({servicos})
+    });
+});
+
+app.get('/ofertaservicos', async(req, res)=>{
+    await servico.count('id').then(function(servicos){
+        res.json({servicos});
+    });
+});
+
+app.get('/servico/:id', async(req, res)=>{
+    await servico.findByPk(req.params.id)
+    .then(serv =>{
+        return res.json({
+            error: false,
+            serv
+        });
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            message: "Erro: não foi possível conectar!"
+        });
+    });
+});
+
+app.get('/listadeclientes', async(req, res)=>{
+    await cliente.findAll({
+        //raw: true
+        order: [['clienteDesde', 'ASC']]
+    }).then(function(clientes){
+        res.json({clientes})
+    });
+});
+
+app.get('/bancodadosclientes', async(req, res)=>{
+    await cliente.count('id').then(function(clientes){
+        res.json({clientes});
+    });
+});
+
+app.get('/listadepedidos', async(req, res)=>{
+    await itempedido.findAll({
+        //raw: true
+        order: [['valor', 'DESC']]
+    }).then(function(itenspedidos){
+        res.json({itenspedidos})
+    });
+});
+
+app.get('/pedidosrealizados', async(req, res)=>{
+    await pedido.count('id').then(function(pedidos){
+        res.json({pedidos});
+    });
+});
 
 let port=process.env.PORT || 3001; // back-end, 3000 front-end
 
