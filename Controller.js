@@ -1,6 +1,8 @@
 const express = require ('express');
 const cors = require ('cors');
 
+const {Sequelize} = require ('./models');
+
 const models=require('./models');
 
 const app=express();
@@ -110,6 +112,66 @@ app.get('/servico/:id', async(req, res)=>{
     });
 });
 
+app.put('/atualizaservico', async(req, res)=>{
+    await servico.update(req.body, {
+        where: {id: req.body.id}
+    }).then(function(){
+        return res.json({
+            erro: false,
+            message: "Serviço foi alterado com sucesso!"
+        });
+    }).catch(function(){
+        return res.status(400).json({
+            error: true,
+            message: "Erro na alteraçao do serviço."
+        });
+    });
+});
+
+app.get('/pedidos/:id', async(req, res)=>{
+    await pedido.findByPk(req.params.id, {include: [{all: true}]})
+    .then(ped=>{
+        return res.json({ped});
+    })
+})
+
+app.put('/pedidos/:id/editaritem', async(req, res)=>{
+    const item={
+        quantidade: req.body.quantidade,
+        valor: req.body.valor
+    };
+
+    if (!await pedido.findByPk(req.params.id)){
+        return res.status(400).json({
+            error: true,
+            message: 'Pedido não foi encontrado.'
+        });
+    };
+
+    if (!await servico.findByPk(req.body.ServicoId)){
+        return res.status(400).json({
+            error: true,
+            message: 'Serviço não foi encontrado.'
+        });
+    };
+
+    await itempedido.update(item, {
+        where: Sequelize.and({ServicoId: req.body.ServicoId},
+            {PedidoId: req.params.id})
+    }).then(function(itens){
+        return res.json({
+            error: false,
+            message: 'Pedido alterado com sucesso!',
+            itens
+        });
+    }).catch(function(erro){
+        return res.status(400).json ({
+            error: true,
+            message: 'Erro: Não foi possível alterar.'
+        });
+    });
+});
+
 app.get('/listadeclientes', async(req, res)=>{
     await cliente.findAll({
         //raw: true
@@ -139,6 +201,17 @@ app.get('/pedidosrealizados', async(req, res)=>{
         res.json({pedidos});
     });
 });
+
+app.get('/clientes-pedidos', async(req, res)=>{
+    await cliente.findAll({include:[{all:true}]})
+    .then(cli=>{
+        return res.json({
+            error: false,
+            cli
+        })
+    })
+});
+
 
 let port=process.env.PORT || 3001; // back-end, 3000 front-end
 
